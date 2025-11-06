@@ -9,6 +9,8 @@ import {
   LogOut,
 } from "lucide-react";
 import "./App.css";
+// pagination state moved into the App component
+
 
 const initialBikes = [
   {
@@ -66,8 +68,12 @@ function App() {
   const [bikes, setBikes] = useState(initialBikes);
   const [bookings, setBookings] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [selectedBike, setSelectedBike] = useState(null);
+  // pagination state for admin booking list
+  const [currentPage, setCurrentPage] = useState(1);
+  const bookingsPerPage = 5; // Menampilkan 5 pesanan per halaman
 
+  const [selectedBike, setSelectedBike] = useState(null);
+  
   const [bookingForm, setBookingForm] = useState({
     name: "",
     email: "",
@@ -85,7 +91,7 @@ function App() {
     ) {
       alert("Mohon lengkapi semua data!");
       return;
-    }
+    };
 
     const newBooking = {
       id: Date.now(),
@@ -112,6 +118,14 @@ function App() {
     });
     setSelectedBike(null);
     setPage("bikes");
+  };
+
+  const handleCheckIn = (booking) => {
+  updateBikeStatus(booking.bikeId, "dipinjam"); // Update bike status
+  updateBookingStatus(booking.id, "active"); // Update booking status to active
+
+    // Show confirmation alert
+    alert("Check-in berhasil! Status sepeda diubah ke Dipinjam");
   };
 
   const handleAdminLogin = () => {
@@ -454,6 +468,11 @@ function App() {
   if (page === "admin" && isAdmin) {
     const pendingBookings = bookings.filter((b) => b.status === "pending");
     const activeRentals = bookings.filter((b) => b.status === "active");
+    // pagination calculations for pending bookings
+    const indexOfLastBooking = currentPage * bookingsPerPage;
+    const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
+    const currentBookings = pendingBookings.slice(indexOfFirstBooking, indexOfLastBooking);
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
       <div className="min-h-screen bg-gray-50">
@@ -508,57 +527,57 @@ function App() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold mb-4">
-              Booking Pending (Check-In)
-            </h2>
-            {pendingBookings.length === 0 ? (
-              <p className="text-gray-600">Tidak ada booking pending</p>
-            ) : (
-              <div className="space-y-4">
-                {pendingBookings.map((booking) => (
-                  <div
-                    key={booking.id}
-                    className="border border-gray-200 p-4 rounded-lg"
-                  >
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <div className="font-bold text-lg mb-2">
-                          Kode: {booking.bookingCode}
-                        </div>
-                        <div className="text-gray-600">
-                          Nama: {booking.name}
-                        </div>
-                        <div className="text-gray-600">
-                          Sepeda: {booking.bikeName}
-                        </div>
-                        <div className="text-gray-600">
-                          Durasi: {booking.duration} Jam
-                        </div>
-                        <div className="text-gray-600">
-                          Telepon: {booking.phone}
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-end">
-                        <button
-                          onClick={() => {
-                            updateBikeStatus(booking.bikeId, "dipinjam");
-                            updateBookingStatus(booking.id, "active");
-                            alert(
-                              "Check-in berhasil! Status sepeda diubah ke Dipinjam"
-                            );
-                          }}
-                          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
-                        >
-                          Check-In
-                        </button>
-                      </div>
-                    </div>
+    <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+      <h2 className="text-2xl font-bold mb-4">Booking Pending (Check-In)</h2>
+      {pendingBookings.length === 0 ? (
+        <p className="text-gray-600">Tidak ada booking pending</p>
+      ) : (
+        <div className="space-y-4">
+          {currentBookings.map((booking) => (
+            <div
+              key={booking.id}
+              className="border border-gray-200 p-4 rounded-lg"
+            >
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <div className="font-bold text-lg mb-2">
+                    Kode: {booking.bookingCode}
                   </div>
-                ))}
+                  <div className="text-gray-600">Nama: {booking.name}</div>
+                  <div className="text-gray-600">Sepeda: {booking.bikeName}</div>
+                  <div className="text-gray-600">Durasi: {booking.duration} Jam</div>
+                  <div className="text-gray-600">Telepon: {booking.phone}</div>
+                </div>
+                <div className="flex items-center justify-end">
+                  <button
+                    onClick={() => {
+                      handleCheckIn(booking);
+                      alert("Check-in berhasil! Status sepeda diubah ke Dipinjam");
+                    }}
+                    className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
+                  >
+                    Check-In
+                  </button>
+                </div>
               </div>
-            )}
-          </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      <div className="pagination flex justify-center mt-4">
+        {Array.from({ length: Math.ceil(pendingBookings.length / bookingsPerPage) }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => paginate(index + 1)}
+            className="px-4 py-2 mx-1 border border-gray-300 rounded-lg hover:bg-gray-200"
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
+    </div>
 
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
             <h2 className="text-2xl font-bold mb-4">
