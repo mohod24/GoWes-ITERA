@@ -4,10 +4,12 @@
   "description": "Sistem Penyewaan Sepeda Online di Kebun Raya ITERA",
   "private": true,
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.16",
     "lucide-react": "^0.263.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "tailwindcss": "^4.1.16"
   },
   "scripts": {
     "start": "react-scripts start",
