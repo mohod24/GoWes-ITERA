@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
 import { initialBikes, LS_BIKES, LS_BOOKINGS, LS_USER, LS_USERS } from "./lib/constants";
@@ -12,6 +12,16 @@ import Booking from "./pages/Booking";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import MyBookings from "./pages/MyBookings";
+
+// === API services (backend) ===
+import {
+  createBooking,
+  listBookings,
+  // berikut nanti bisa dipakai di Admin:
+  checkInBooking,
+  returnBooking,
+  cancelBooking,
+} from "./services/api";
 
 export default function App() {
   const [page, setPage] = useState("landing");
@@ -60,7 +70,23 @@ export default function App() {
     );
   };
 
-  const handleBooking = () => {
+  // === Ambil data bookings dari backend sekali saat mount ===
+  useEffect(() => {
+    (async () => {
+      try {
+        const server = await listBookings();
+        if (Array.isArray(server)) {
+          setBookings(server);
+        }
+      } catch (e) {
+        console.warn("Gagal memuat data dari API:", e.message);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // === Booking lewat backend ===
+  const handleBooking = async () => {
     if (!currentUser || currentUser.role !== "user") {
       alert("Silakan daftar/masuk sebagai pengguna terlebih dahulu.");
       setPendingSelectedBike(selectedBike);
@@ -79,27 +105,37 @@ export default function App() {
       return;
     }
 
-    const newBooking = {
-      id: Date.now(),
+    const payload = {
       userId: currentUser.id,
       userName: currentUser.name,
       bikeId: selectedBike.id,
       bikeName: selectedBike.name,
-      ...bookingForm,
-      requestDate: new Date().toLocaleString("id-ID"),
-      checkInDate: null,
-      status: "pending",
-      bookingCode: `GW${Date.now().toString().slice(-6)}`,
+      name: bookingForm.name,
+      email: bookingForm.email,
+      phone: bookingForm.phone,
+      idNumber: bookingForm.idNumber,
+      duration: bookingForm.duration,
     };
 
-    setBookings((prev) => [...prev, newBooking]);
-    updateBikeStatus(selectedBike.id, "dipesan");
+    try {
+      const serverBooking = await createBooking(payload);
 
-    alert(`Pemesanan Berhasil!\n\nKode Booking: ${newBooking.bookingCode}\n\nSilakan tunjukkan kode ini saat check-in di pos penyewaan.`);
+      // Update UI lokal agar konsisten dengan perilaku lama
+      setBookings((prev) => [...prev, serverBooking]);
+      updateBikeStatus(selectedBike.id, "dipesan");
 
-    setBookingForm({ name: "", email: "", phone: "", idNumber: "", duration: "1" });
-    setSelectedBike(null);
-    setPage("myBookings");
+      alert(
+        `Pemesanan Berhasil!\n\n` +
+        `Kode Booking: ${serverBooking.bookingCode}\n\n` +
+        `Silakan tunjukkan kode ini saat check-in di pos penyewaan.`
+      );
+
+      setBookingForm({ name: "", email: "", phone: "", idNumber: "", duration: "1" });
+      setSelectedBike(null);
+      setPage("myBookings");
+    } catch (err) {
+      alert("Gagal menyimpan ke server: " + err.message);
+    }
   };
 
   // Auth helpers
