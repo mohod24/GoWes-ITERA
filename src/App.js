@@ -71,11 +71,12 @@ export default function App() {
   const isAdmin = currentUser?.role === "admin";
 
   const [bookingForm, setBookingForm] = useState({
+    bike: null,
     name: "",
     email: "",
     phone: "",
-    idNumber: "",
-    duration: "1",
+    identity: "",
+    duration: 1,
   });
 
   // ====== State untuk halaman AUTH (diletakkan di top-level agar tidak melanggar rules of hooks) ======
@@ -114,6 +115,16 @@ export default function App() {
       alert("Mohon lengkapi semua data!");
       return;
     }
+    setBookingForm({
+      bike,
+      name: currentUser.name || "",
+      email: currentUser.email || "",
+      phone: currentUser.phone || "",
+      identity: "",
+      duration: 1,
+    });
+    setPage("booking");
+  };
 
     if (!selectedBike || selectedBike.status !== "tersedia") {
       alert("Sepeda tidak tersedia.");
@@ -130,7 +141,9 @@ export default function App() {
       requestDate: new Date().toLocaleString("id-ID"),
       checkInDate: null,
       status: "pending",
-      bookingCode: `GW${Date.now().toString().slice(-6)}`,
+      paymentStatus: "unpaid",
+      totalPrice: priceCalc.totalPrice,
+      bookingDate: new Date().toLocaleString("id-ID"),
     };
 
     setBookings((prev) => [...prev, newBooking]);
@@ -735,7 +748,99 @@ const Navbar = () => {
         </div>
       </div>
     );
-  }
+    info(`Status ${bike?.name} diubah menjadi ${bike?.status === "tersedia" ? "dipinjam" : "tersedia"}.`);
+  };
 
-  return null;
+  // Routing
+  return (
+    <div className="App">
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
+
+      {page === "landing" && (
+        <LandingPage
+          counts={counts}
+          setPage={setPage}
+          currentUser={currentUser}
+          logout={logout}
+        />
+      )}
+
+      {page === "bikes" && (
+        <BikeListPage
+          bikes={bikes}
+          currentUser={currentUser}
+          setPage={setPage}
+          logout={logout}
+          handleBookBike={handleBookBike}
+        />
+      )}
+
+      {page === "booking" && (
+        <BookingPage
+          bookingForm={bookingForm}
+          setBookingForm={setBookingForm}
+          currentUser={currentUser}
+          setPage={setPage}
+          logout={logout}
+          handleSubmitBooking={handleSubmitBooking}
+        />
+      )}
+
+      {page === "payment" && (
+        <PaymentPage
+          booking={selectedBookingForPayment}
+          currentUser={currentUser}
+          setPage={setPage}
+          logout={logout}
+          handlePaymentSuccess={handlePaymentSuccess}
+          showSuccess={success}
+          showError={error}
+          showWarning={warning}
+        />
+      )}
+
+      {page === "admin" && (
+        <AdminDashboard
+          bookings={bookings}
+          bikes={bikes}
+          currentUser={currentUser}
+          setPage={setPage}
+          logout={logout}
+          handleCheckIn={handleCheckIn}
+          handleCancelBooking={handleCancelBooking}
+          handleReturnBike={handleReturnBike}
+          handleToggleBikeStatus={handleToggleBikeStatus}
+        />
+      )}
+
+      {page === "auth" && (
+        <AuthPage
+          authTab={authTab}
+          setAuthTab={setAuthTab}
+          loginForm={loginForm}
+          setLoginForm={setLoginForm}
+          registerForm={registerForm}
+          setRegisterForm={setRegisterForm}
+          adminLoginForm={adminLoginForm}
+          setAdminLoginForm={setAdminLoginForm}
+          currentUser={currentUser}
+          setPage={setPage}
+          logout={logout}
+          handleLogin={handleLogin}
+          handleRegister={handleRegister}
+          handleAdminLogin={handleAdminLogin}
+        />
+      )}
+
+      {page === "myBookings" && (
+        <MyBookingsPage
+          bookings={bookings}
+          currentUser={currentUser}
+          setPage={setPage}
+          logout={logout}
+          handlePayFromBookings={handlePayFromBookings}
+        />
+      )}
+    </div>
+  );
 }

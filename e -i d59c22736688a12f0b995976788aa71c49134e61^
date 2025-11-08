@@ -1,0 +1,53 @@
+[33mcommit ccce69724d22ddc440fc68d2dbd8381b1daf3cc2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrosa[m[33m)[m
+Author: 02_031_Muhammad Romadhon Santoso <sleepyinsomniac354@gmail.com>
+Date:   Sat Nov 8 11:56:43 2025 +0700
+
+    ngurangin statistik di admin, nambah copyright, payment gateway
+
+[33mcommit d59c22736688a12f0b995976788aa71c49134e61[m
+Author: 02_031_Muhammad Romadhon Santoso <sleepyinsomniac354@gmail.com>
+Date:   Sat Nov 8 11:40:10 2025 +0700
+
+    payment gateway, ngurangin statistik admin, copyright footer landingpage
+
+[33mcommit 6410a99fb57e5fe6957496b9f044a354b82c6e74[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Muhammad Fajri Firdaus <fajrifirdaus15@gmail.com>
+Date:   Fri Nov 7 21:10:48 2025 +0700
+
+    ulang
+
+[33mcommit 7440541a59d5cc267e029f3acbffe642cc93e9f7[m
+Merge: f233dc7 52c0f02
+Author: 02_031_Muhammad Romadhon Santoso <sleepyinsomniac354@gmail.com>
+Date:   Fri Nov 7 10:54:56 2025 +0700
+
+    Merge pull request #3 from mohod24/rosa
+    
+    modularisasi app.js
+
+[33mcommit 52c0f02c5409c0c9eae2af73b6ea34ca691b64e1[m[33m ([m[1;31morigin/rosa[m[33m)[m
+Author: 02_031_Muhammad Romadhon Santoso <sleepyinsomniac354@gmail.com>
+Date:   Fri Nov 7 10:51:35 2025 +0700
+
+    modularisasi app.js
+
+[33mcommit f233dc7275b568d67427f95b043b5c0c9b2f197d[m
+Merge: 15506df 8b45d34
+Author: 02_031_Muhammad Romadhon Santoso <sleepyinsomniac354@gmail.com>
+Date:   Fri Nov 7 02:02:50 2025 +0700
+
+    Merge pull request #1 from mohod24/rosa
+    
+    pagination pending
+
+[33mcommit 8b45d346778a38b1140bd91787f41c00559014e5[m
+Author: 02_031_Muhammad Romadhon Santoso <sleepyinsomniac354@gmail.com>
+Date:   Fri Nov 7 01:59:40 2025 +0700
+
+    pagination pending
+
+[33mcommit 15506df588ec870714774668e7a726d9e20152b1[m[33m ([m[1;32mmain[m[33m)[m
+Author: mohod24 <mohdmusyaffa.123140184@student.itera.ac.id>
+Date:   Fri Oct 31 09:37:22 2025 +0700
+
+    Initial commit
