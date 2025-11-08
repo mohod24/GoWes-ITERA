@@ -151,6 +151,15 @@ function App() {
     } else {
       error("Email atau password admin salah!");
     }
+    setBookingForm({
+      bike,
+      name: currentUser.name || "",
+      email: currentUser.email || "",
+      phone: currentUser.phone || "",
+      identity: "",
+      duration: 1,
+    });
+    setPage("booking");
   };
 
   const logout = () => {
