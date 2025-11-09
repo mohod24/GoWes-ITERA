@@ -134,33 +134,35 @@ function App() {
   };
 
   const handleAdminLogin = () => {
-    if (
-      adminLoginForm.email === "admin@itera.ac.id" &&
-      adminLoginForm.password === "admin123"
-    ) {
-      const admin = {
-        id: "admin",
-        name: "Admin",
-        email: "admin@itera.ac.id",
-        role: "admin",
-      };
-      setCurrentUser(admin);
-      setPage("admin");
-      setAdminLoginForm({ email: "", password: "" });
-      success("Login admin berhasil! Selamat datang di Dashboard.");
-    } else {
-      error("Email atau password admin salah!");
-    }
-    setBookingForm({
-      bike,
-      name: currentUser.name || "",
-      email: currentUser.email || "",
-      phone: currentUser.phone || "",
-      identity: "",
-      duration: 1,
-    });
-    setPage("booking");
+  // Validasi kredensial admin (demo; idealnya ke backend)
+  const isOk =
+    adminLoginForm.email === "admin@itera.ac.id" &&
+    adminLoginForm.password === "admin123";
+
+  if (!isOk) {
+    error("Email atau password admin salah!");
+    return;
+  }
+
+  const admin = {
+    id: "admin",
+    name: "Admin",
+    email: "admin@itera.ac.id",
+    role: "admin",
   };
+
+  setCurrentUser(admin);
+  setAdminLoginForm({ email: "", password: "" });
+
+  // Admin tidak perlu flow booking, jadi JANGAN set bookingForm di sini.
+  // Hanya arahkan ke dashboard admin.
+  setPage("admin");
+  success("Login admin berhasil! Selamat datang di Dashboard.");
+
+  // (Opsional) pastikan tidak ada state booking tertinggal
+  setPendingSelectedBike(null);
+};
+
 
   const logout = () => {
     const userName = currentUser?.name;

@@ -261,7 +261,8 @@ export default function AuthPage({
               </h2>
               <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mb-4">
                 <p className="text-sm text-yellow-800">
-                  <strong>Demo:</strong> admin@itera.ac.id / admin123
+                  {/* admin@itera.ac.id / admin123 */}
+                  <strong>Admin :</strong> Hanya untuk Petugas GoWes ITERA
                 </p>
               </div>
               <div>
@@ -284,7 +285,7 @@ export default function AuthPage({
                       })
                     }
                     className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="admin@itera.ac.id"
+                    placeholder="email@example.com"
                   />
                 </div>
               </div>
